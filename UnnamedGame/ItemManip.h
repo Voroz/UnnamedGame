@@ -4,6 +4,8 @@
 
 // Swaps 2 slots items
 
+class ItemSlot;
+
 bool swapItem(ItemSlot* slot1, ItemSlot* slot2);
 
 // Moves item from one slot to another, swapping the slots contents.

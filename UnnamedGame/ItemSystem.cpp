@@ -1,25 +1,66 @@
 #include "ItemSystem.h"
 
 
-ItemSystem::ItemSystem(sf::RenderWindow &window, Inventory& inventory, std::vector<Item*>& items) :
+ItemSystem::ItemSystem(sf::RenderWindow &window, Inventory& inventory) :
 	_window(window),
 	_inventory(inventory),
-	_items(items),
-	_mouseData(window, inventory, items){
+	_mouseData(window, inventory, _items){
 
 }
 
 ItemSystem::~ItemSystem(){
-
+	for (auto& item : _items) {
+		delete item;
+	}
 }
 
+ItemSlot* ItemSystem::findFirstFreeSlot(Inventory& inventory){
+	ItemSlot* currSlot = nullptr;
+	for (auto& slot : inventory.slots()) {
+		if (slot.item() == nullptr) {
+			currSlot = &slot;
+		}
+	}
+	if (currSlot == nullptr) {
+		return nullptr;
+	}
+	for (auto& slot : inventory.slots()) {
+		// slot already has item, continue.
+		if (slot.item() != nullptr) {
+			continue;
+		}
+		if (slot.pos().x < currSlot->pos().x) {
+			currSlot = &slot;
+			continue;
+		}
+		if (slot.pos().x == currSlot->pos().x && slot.pos().y < currSlot->pos().y) {
+			currSlot = &slot;
+			continue;
+		}
+	}
+	return currSlot;
+}
+
+// Temporary implementation (Can't choose type of item to spawn yet).
+void ItemSystem::spawnItem(Inventory& inventory) {
+	ItemSlot* slot = findFirstFreeSlot(inventory);
+	if (slot == nullptr) {
+		return;
+	}
+	_items.push_back(new Item(inventory));
+	_items.back()->setWidth(slot->width());
+	_items.back()->setHeight(slot->height());
+	slot->assignItem(*_items.back());
+}
+std::vector<Item*>& ItemSystem::items() {
+	return _items;
+}
 void ItemSystem::updateItemPos() {
 	for (auto &slot : _inventory.slots()) {
 		if (slot.item() == nullptr) {
 			continue;
 		}
 		slot.item()->setPos(slot.pos());
-		int test = 0;
 	}
 }
 void ItemSystem::tick() {

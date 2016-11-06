@@ -8,6 +8,8 @@
 #include <iostream>
 #include <array>
 
+class Inventory;
+
 struct MoveItemData {
 	ItemSlot* from = nullptr;
 	ItemSlot* to = nullptr;
@@ -77,8 +79,11 @@ private:
 class ItemSystem
 {
 public:
-	ItemSystem(sf::RenderWindow &window, Inventory& inventory, std::vector<Item*>& items);
+	ItemSystem(sf::RenderWindow &window, Inventory& inventory);
 	~ItemSystem();
+	ItemSlot* findFirstFreeSlot(Inventory& inventory);
+	void spawnItem(Inventory& inventory);
+	std::vector<Item*>& items();
 	void updateItemPos();
 	void tick();
 
@@ -87,6 +92,7 @@ private:
 	MouseData _mouseData;
 	sf::RenderWindow &_window;
 	Inventory& _inventory;
-	std::vector<Item*>& _items;
+	// Needs to be pointer because vector resizing keeps changing memory addresses so ItemSlots have invalid addresses.
+	std::vector<Item*> _items;
 };
 

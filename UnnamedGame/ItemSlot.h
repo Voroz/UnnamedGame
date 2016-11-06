@@ -2,6 +2,8 @@
 #include "BoundingRect.h"
 #include "Item.h"
 
+class Item;
+
 class ItemSlot :
 	public BoundingRect{
 

@@ -11,23 +11,16 @@ Game::~Game(){
 }
 
 void Game::run() {
-	std::vector<Item*> items;
-	items.push_back(new Item);
-	items.push_back(new Item);
-
+	Character character;
 	Inventory inventory(sf::Vector2i(560, 400), sf::Vector2i(212, 158), 12, 4, 3);
-
-	inventory.slots()[0].assignItem(*items[0]);
-	inventory.slots()[1].assignItem(*items[1]);
-
-	items[0]->setWidth(50);
-	items[0]->setHeight(50);
-	items[1]->setWidth(50);
-	items[1]->setHeight(50);
 
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Item System");
 
-	ItemSystem itemSystem(window, inventory, items);
+	ItemSystem itemSystem(window, inventory);
+	itemSystem.spawnItem(inventory);
+	itemSystem.spawnItem(inventory);
+	itemSystem.spawnItem(inventory);
+	itemSystem.spawnItem(inventory);
 
 	// run the program as long as the window is open
 	while (window.isOpen()) {
@@ -43,14 +36,9 @@ void Game::run() {
 
 		window.clear();
 		inventory.debugDraw(window);
-		for (auto& item : items) {
+		for (auto& item : itemSystem.items()) {
 			item->debugDraw(window);
 		}
 		window.display();
-	}
-
-	// Delete allocated item memory before closing
-	for (auto item : items) {
-		delete item;
 	}
 }

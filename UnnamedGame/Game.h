@@ -4,6 +4,7 @@
 #include <SFML/System.hpp>
 #include <iostream>
 #include "ItemSystem.h"
+#include "Character.h"
 
 class Game
 {
